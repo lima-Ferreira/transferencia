@@ -26,6 +26,11 @@
             align-items: center;
         }
 
+        /* ELEMENTOS EXCLUSIVOS DE IMPRESSÃO */
+        .print-only {
+            display: none;
+        }
+
         header.no-print {
             position: fixed;
             top: 0;
@@ -37,7 +42,7 @@
             gap: 10px;
             align-items: center;
             padding: 0 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             z-index: 1000;
         }
 
@@ -52,10 +57,10 @@
             max-width: 98vw;
         }
 
-        table { 
-            border-collapse: collapse; 
-            width: 100%; 
-            table-layout: auto; 
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: auto;
         }
 
         th {
@@ -70,7 +75,11 @@
             color: #64748b;
         }
 
-        td { border: 1px solid var(--border); padding: 6px; text-align: center; }
+        td {
+            border: 1px solid var(--border);
+            padding: 6px;
+            text-align: center;
+        }
 
         .row-store-label {
             position: sticky;
@@ -86,21 +95,42 @@
             border-right: 2px solid var(--border);
         }
 
-        /* AJUSTE DOS INPUTS PARA SEREM FLUIDOS */
         input {
-            width: 100%; /* Ocupa toda a largura da coluna */
-            box-sizing: border-box; /* Garante que o padding não aumente o tamanho */
+            width: 100%;
+            box-sizing: border-box;
             height: 32px;
             border: 1px solid #cbd5e1;
             text-align: center;
             border-radius: 6px;
             font-weight: 600;
-            min-width: 45px; /* Tamanho mínimo para não sumir */
+            min-width: 45px;
         }
 
-        .input-cod { background: #fffbeb; border-color: #fde68a; color: #92400e; }
-        .input-total { background: #f1f5f9; color: var(--primary); border-style: dashed; }
-        .input-restante { background: #f1f5f9; border: 1px solid var(--border); cursor: not-allowed; }
+        input::placeholder {
+            color: #94a3b8;
+            /* Cor cinza suave */
+
+            opacity: 1;
+            /* Garante que a cor apareça forte no Firefox */
+        }
+
+        .input-cod {
+            background: #fffbeb;
+            border-color: #fde68a;
+            color: #92400e;
+        }
+
+        .input-total {
+            background: #f1f5f9;
+            color: var(--primary);
+            border-style: dashed;
+        }
+
+        .input-restante {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            cursor: not-allowed;
+        }
 
         .btn {
             padding: 8px 14px;
@@ -116,25 +146,104 @@
             white-space: nowrap;
         }
 
-        .btn:hover { opacity: 0.85; transform: translateY(-1px); }
-        .btn-add { background: var(--primary); color: white; }
-        .btn-print { background: var(--secondary); color: white; }
-        .btn-clear-last { background: var(--warning); color: white; margin-left: auto; }
-        .btn-clear { background: var(--danger); color: white; }
+        .btn:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+
+        .btn-add {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-print {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-clear-last {
+            background: var(--warning);
+            color: white;
+            margin-left: auto;
+        }
+
+
+
+        .btn-clear {
+            background: var(--danger);
+            color: white;
+        }
+
+
 
         @media print {
-            @page { size: landscape; margin: 0.5cm; }
-            header.no-print { display: none !important; }
-            body { background: white; display: block; }
-            .container { margin-top: 0; padding: 0; box-shadow: none; max-width: 100%; }
-            table { width: 100%; zoom: 0.7; }
-            th, .row-store-label { position: static !important; background: white !important; color: black !important; }
-            input { border: 1px solid #000 !important; }
+            @page {
+                size: landscape;
+                margin: 0.5cm;
+            }
+
+            header.no-print {
+                display: none !important;
+            }
+
+            .print-only {
+                display: block !important;
+                text-align: center;
+                color: black;
+            }
+
+            .print-title {
+                font-size: 22px;
+                font-weight: bold;
+                margin-bottom: 5px;
+                text-transform: uppercase;
+            }
+
+            .print-date {
+                font-size: 14px;
+                margin-bottom: 20px;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+            }
+
+            body {
+                background: white;
+                display: block;
+            }
+
+            .container {
+                margin-top: 0;
+                padding: 0;
+                box-shadow: none;
+                max-width: 100%;
+            }
+
+            table {
+                width: 100%;
+                zoom: 0.7;
+            }
+
+            th,
+            .row-store-label {
+                position: static !important;
+                background: white !important;
+                color: black !important;
+            }
+
+            input {
+                border: 1px solid #000 !important;
+            }
         }
     </style>
 </head>
 
 <body>
+
+    <!-- Cabeçalho de Impressão -->
+    <div class="print-only">
+        <div class="print-title">Relatório de Transferência</div>
+        <div class="print-date" id="currentDate">Data: --/--/----</div>
+    </div>
 
     <header class="no-print">
         <h2 style="margin: 0 15px 0 0; font-size: 1.1rem; color: #0f172a;">Separação</h2>
@@ -152,40 +261,69 @@
                 </tr>
             </thead>
             <tbody id="storeRows">
-                <tr data-store="Matriz"><td class="row-store-label">Matriz</td></tr>
-                <tr data-store="Palhano"><td class="row-store-label">Palhano</td></tr>
-                <tr data-store="Jaguaruana"><td class="row-store-label">Jaguaruana</td></tr>
-                <tr data-store="Loja 05"><td class="row-store-label">Loja 05</td></tr>
-                <tr data-store="Limoeiro"><td class="row-store-label">Limoeiro</td></tr>
-                <tr data-store="Itaicaba"><td class="row-store-label">Itaicaba</td></tr>
-                <tr data-store="Flores"><td class="row-store-label">Flores</td></tr>
-                <tr data-store="Aracati"><td class="row-store-label">Aracati</td></tr>
+                <tr data-store="Matriz">
+                    <td class="row-store-label">Matriz</td>
+                </tr>
+                <tr data-store="Palhano">
+                    <td class="row-store-label">Palhano</td>
+                </tr>
+                <tr data-store="Jaguaruana">
+                    <td class="row-store-label">Jaguaruana</td>
+                </tr>
+                <tr data-store="Loja 05">
+                    <td class="row-store-label">Loja 05</td>
+                </tr>
+                <tr data-store="Limoeiro">
+                    <td class="row-store-label">Limoeiro</td>
+                </tr>
+                <tr data-store="Itaicaba">
+                    <td class="row-store-label">Itaicaba</td>
+                </tr>
+                <tr data-store="Flores">
+                    <td class="row-store-label">Flores</td>
+                </tr>
+                <tr data-store="Aracati">
+                    <td class="row-store-label">Aracati</td>
+                </tr>
             </tbody>
             <tfoot>
-                <tr id="footer-total"><td class="row-store-label">TOTAL NOTA</td></tr>
-                <tr id="footer-restante"><td class="row-store-label">RESTANTE</td></tr>
+                <tr id="footer-total">
+                    <td class="row-store-label">TOTAL NOTA</td>
+                </tr>
+                <tr id="footer-restante">
+                    <td class="row-store-label">RESTANTE</td>
+
+                </tr>
             </tfoot>
         </table>
     </div>
 
     <script>
-        window.onload = function() {
+        window.onload = function () {
             loadFromStorage();
+            updatePrintDate();
         };
+
+        function updatePrintDate() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('pt-BR');
+            const timeStr = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('currentDate').innerText = `Gerado em: ${dateStr} às ${timeStr}`;
+        }
 
         function addColumn(initialData = null) {
             const header = document.getElementById('header-cod');
             const th = document.createElement('th');
             const colIndex = header.cells.length;
-            
+
             th.innerHTML = `<input type="text" class="input-cod" placeholder="CÓD" oninput="saveToStorage()" value="${initialData?.cod || ''}">`;
             header.appendChild(th);
 
             const rows = document.getElementById('storeRows').rows;
             for (let i = 0; i < rows.length; i++) {
                 const td = rows[i].insertCell(-1);
-                const val = initialData?.values?.[i] || 0;
-                td.innerHTML = `<input type="number" value="${val}" oninput="calculateColumn(${colIndex}); saveToStorage();">`;
+                const val = initialData?.values?.[i] || '';
+                td.innerHTML = `<input type="number" value="${val}" placeholder="0" oninput="calculateColumn(${colIndex}); saveToStorage();">`;
             }
 
             const fTotal = document.getElementById('footer-total');
@@ -206,11 +344,9 @@
             for (let i = 0; i < rows.length; i++) {
                 sum += parseFloat(rows[i].cells[colIndex].querySelector('input').value) || 0;
             }
-
             const totalInput = document.getElementById('footer-total').cells[colIndex].querySelector('input');
             const totalNota = parseFloat(totalInput.value) || 0;
             const restanteInput = document.getElementById('footer-restante').cells[colIndex].querySelector('input');
-            
             const result = totalNota - sum;
             restanteInput.value = result;
 
@@ -226,7 +362,6 @@
         function saveToStorage() {
             const headerCells = document.getElementById('header-cod').cells;
             const data = [];
-
             for (let j = 1; j < headerCells.length; j++) {
                 const cod = headerCells[j].querySelector('input').value;
                 const total = document.getElementById('footer-total').cells[j].querySelector('input').value;
@@ -244,10 +379,9 @@
             const saved = localStorage.getItem('separacao_dados');
             if (saved) {
                 const data = JSON.parse(saved);
-                if (data.length > 0) {
-                    data.forEach(item => addColumn(item));
-                } else { addColumn(); }
-            } else { addColumn(); }
+                if (data.length > 0) data.forEach(item => addColumn(item));
+                else addColumn();
+            } else addColumn();
         }
 
         function removeLastColumn() {
@@ -256,9 +390,7 @@
                 if (confirm('Remover o último produto?')) {
                     const table = document.getElementById('mainTable');
                     const allRows = table.querySelectorAll('tr');
-                    allRows.forEach(row => {
-                        if (row.cells.length > 1) row.deleteCell(-1);
-                    });
+                    allRows.forEach(row => { if (row.cells.length > 1) row.deleteCell(-1); });
                     saveToStorage();
                 }
             }
@@ -272,4 +404,5 @@
         }
     </script>
 </body>
+
 </html>
