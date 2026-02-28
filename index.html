@@ -9,30 +9,26 @@
         :root {
             --primary: #2563eb;
             --success: #22c55e;
+            --warning: #f59e0b;
             --danger: #ef4444;
             --bg: #f8fafc;
             --border: #e2e8f0;
+            --secondary: #64748b;
         }
 
         body {
             display: flex;
             justify-content: center;
-            /* Centraliza na horizontal */
             align-items: center;
-            /* Centraliza na vertical */
             max-width: 95vw;
-            /* Impede que o container "estoure" a tela */
             overflow-x: auto;
-            /* Cria a barra de rolagem se a tabela crescer demais */
             min-height: 100vh;
-            /* Garante que o corpo tenha a altura de 100% da tela */
             margin: 0;
             background: var(--bg);
             font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
         .container {
-            /* Mantenha o que já existe, mas remova o display: inline-block se quiser que ele respeite melhor o flex */
             background: white;
             padding: 20px;
             border-radius: 12px;
@@ -42,7 +38,7 @@
 
         header {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             margin-bottom: 20px;
             align-items: center;
         }
@@ -52,8 +48,7 @@
             margin-bottom: 10px;
         }
 
-        th,
-        td {
+        th, td {
             border: 1px solid var(--border);
             padding: 6px;
             text-align: center;
@@ -97,17 +92,8 @@
             min-width: 120px;
         }
 
-        .row-total-label {
-            background: #f1f5f9;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .row-restante-label {
-            background: #f8fafc;
-            font-weight: bold;
-            color: #334155;
-        }
+        .row-total-label { background: #f1f5f9; font-weight: bold; color: var(--primary); }
+        .row-restante-label { background: #f8fafc; font-weight: bold; color: #334155; }
 
         .input-restante {
             background: #f1f5f9;
@@ -115,125 +101,39 @@
             cursor: not-allowed;
         }
 
-        .zero-stock {
-            background: #dcfce7 !important;
-            color: var(--success) !important;
-            border-color: var(--success) !important;
-        }
-
-        .has-stock {
-            color: var(--danger);
-        }
-
+        /* ESTILIZAÇÃO DOS BOTÕES */
         .btn {
-            padding: 10px 18px;
+            padding: 8px 14px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 14px;
+            gap: 6px;
+            font-size: 13px;
+            transition: all 0.2s;
         }
 
-        .btn-add {
-            background: var(--primary);
-            color: white;
+        .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
+
+        .btn-add { background: var(--primary); color: white; }
+        .btn-print { background: var(--secondary); color: white; }
+        
+        .btn-clear-last { 
+            background: var(--warning); 
+            color: white; 
+            margin-left: auto; /* Empurra para a direita */
         }
 
-        .btn-print {
-            background: white;
-            color: #64748b;
-            border: 1px solid var(--border);
-        }
-
-        .btn-clear {
-            background: #fee2e2;
-            color: #b91c1c;
-            margin-left: auto;
-        }
+        .btn-clear { background: var(--danger); color: white; }
 
         @media print {
-
-            /* Remove tudo que não é a tabela */
-            .no-print,
-            .btn,
-            header {
-                display: none !important;
-            }
-
-            body {
-                background: white;
-                padding: 0;
-                margin: 0;
-            }
-
-            .container {
-                box-shadow: none;
-                border: none;
-                width: 100%;
-                padding: 0;
-                display: block;
-                /* Remove o flex/center na impressão */
-            }
-
-            /* Reduz o tamanho da fonte e dos inputs na impressão */
-            table {
-                zoom: 0.9;
-                /* Diminui a escala da tabela em 20% */
-                width: 100%;
-            }
-
-            th,
-            td {
-                padding: 3px;
-                /* Espaçamento menor */
-            }
-
-
-
-            .qty-input {
-                width: 80px;
-                /* Ajuste para o tamanho dos seus números */
-                font-size: 16px !important;
-                /* Fonte maior */
-                border: 1px solid #ccc;
-                text-align: center;
-                margin: 0;
-                /* Remove setinhas do input number na impressão se desejar */
-                appearance: textfield;
-            }
-
-            input {
-                font-size: 16px !important;
-                height: 28px !important;
-                width: 70px !important;
-                /* Inputs mais estreitos */
-                border: 1px solid #ddd !important;
-            }
-
-            /* Força a quebra de página correta */
-            tr {
-                page-break-inside: avoid;
-                page-break-after: auto;
-            }
-
-            /* Se a tabela for muito larga (muitos itens), 
-       isso ajuda a tentar encaixar na largura do papel */
-            @page {
-                size: auto;
-                margin: 10mm;
-            }
-
-            .row-store-label,
-            .row-total-label,
-            .row-restante-label {
-                width: 150px;
-                /* Ajuste esse valor conforme necessário */
-                white-space: nowrap;
-                /* Impede que o texto quebre linha */
-            }
+            .no-print, .btn, header { display: none !important; }
+            body { background: white; padding: 0; margin: 0; }
+            .container { box-shadow: none; border: none; width: 100%; display: block; }
+            table { zoom: 0.9; width: 100%; }
         }
     </style>
 </head>
@@ -242,10 +142,23 @@
 
     <div class="container">
         <header class="no-print">
-            <h2 style="margin:0; font-size: 1.2rem; color: #0f172a;">Controle de Transferência</h2>
-            <button class="btn btn-add" onclick="addColumn()">+ Novo Produto</button>
-            <button class="btn btn-print" onclick="window.print()">Imprimir</button>
-            <button class="btn btn-clear" onclick="clearData()">Limpar Tudo</button>
+            <h2 style="margin-right: 15px; font-size: 1.1rem; color: #0f172a;">Separação</h2>
+            
+            <button class="btn btn-add" onclick="addColumn()">
+                <span>➕</span> Novo Produto
+            </button>
+            
+            <button class="btn btn-print" onclick="window.print()">
+                <span>🖨️</span> Imprimir
+            </button>
+            
+            <button class="btn btn-clear-last" onclick="removeLastColumn()">
+                <span>↩️</span> Desfazer Último
+            </button>
+            
+            <button class="btn btn-clear" onclick="clearData()">
+                <span>🗑️</span> Limpar Tudo
+            </button>
         </header>
 
         <table id="mainTable">
@@ -255,122 +168,93 @@
                 </tr>
             </thead>
             <tbody id="storeRows">
-                <tr data-store="Matriz">
-                    <td class="row-store-label">Matriz</td>
-                </tr>
-                <tr data-store="Palhano">
-                    <td class="row-store-label">Palhano</td>
-                </tr>
-                <tr data-store="Jaguaruana">
-                    <td class="row-store-label">Jaguaruana</td>
-                </tr>
-                <tr data-store="Loja 05">
-                    <td class="row-store-label">Loja 05</td>
-                </tr>
-                <tr data-store="Limoeiro">
-                    <td class="row-store-label">Limoeiro</td>
-                </tr>
-                <tr data-store="Itaicaba">
-                    <td class="row-store-label">Itaicaba</td>
-                </tr>
-                <tr data-store="Flores">
-                    <td class="row-store-label">Flores</td>
-                </tr>
-                <tr data-store="Aracati">
-                    <td class="row-store-label">Aracati</td>
-                </tr>
+                <tr data-store="Matriz"><td class="row-store-label">Matriz</td></tr>
+                <tr data-store="Palhano"><td class="row-store-label">Palhano</td></tr>
+                <tr data-store="Jaguaruana"><td class="row-store-label">Jaguaruana</td></tr>
+                <tr data-store="Loja 05"><td class="row-store-label">Loja 05</td></tr>
+                <tr data-store="Limoeiro"><td class="row-store-label">Limoeiro</td></tr>
+                <tr data-store="Itaicaba"><td class="row-store-label">Itaicaba</td></tr>
+                <tr data-store="Flores"><td class="row-store-label">Flores</td></tr>
+                <tr data-store="Aracati"><td class="row-store-label">Aracati</td></tr>
             </tbody>
             <tfoot>
-                <tr id="footer-total">
-                    <td class="row-total-label">TOTAL NOTA</td>
-                </tr>
-                <tr id="footer-restante">
-                    <td class="row-restante-label">RESTANTE</td>
-                </tr>
+                <tr id="footer-total"><td class="row-total-label">TOTAL NOTA</td></tr>
+                <tr id="footer-restante"><td class="row-restante-label">RESTANTE</td></tr>
             </tfoot>
         </table>
     </div>
 
     <script>
-        // Carregar dados ao iniciar
-        window.onload = loadData;
+        window.onload = function() {
+            addColumn();
+        };
 
-        function addColumn(valCod = '', valTotal = '', valStores = []) {
-            const table = document.getElementById('mainTable');
+        function addColumn() {
+            const header = document.getElementById('header-cod');
+            const th = document.createElement('th');
+            th.innerHTML = '<input type="text" class="input-cod" placeholder="CÓD">';
+            header.appendChild(th);
 
-            document.getElementById('header-cod').insertAdjacentHTML('beforeend', `<th><input type="text" class="input-cod" oninput="saveData()" value="${valCod}" placeholder="CÓDIGO"></th>`);
+            const rows = document.getElementById('storeRows').rows;
+            for (let i = 0; i < rows.length; i++) {
+                const td = rows[i].insertCell(-1);
+                td.innerHTML = '<input type="number" class="qty-input" value="0" oninput="calculateColumn(' + (header.cells.length - 1) + ')">';
+            }
 
-            const rows = document.querySelectorAll('#storeRows tr');
-            rows.forEach((row, index) => {
-                const val = valStores[index] || '';
-                row.insertAdjacentHTML('beforeend', `<td><input type="number" class="qty-input" oninput="calculate(); saveData();" value="${val}"></td>`);
-            });
+            const fTotal = document.getElementById('footer-total');
+            const tdT = fTotal.insertCell(-1);
+            tdT.innerHTML = '<input type="number" class="input-total" value="0" oninput="calculateColumn(' + (header.cells.length - 1) + ')">';
 
-            document.getElementById('footer-total').insertAdjacentHTML('beforeend', `<td><input type="number" class="input-total" oninput="calculate(); saveData();" value="${valTotal}" placeholder="QTD"></td>`);
-            document.getElementById('footer-restante').insertAdjacentHTML('beforeend', `<td><input type="number" class="input-restante" readonly value="0"></td>`);
-
-            calculate();
+            const fRest = document.getElementById('footer-restante');
+            const tdR = fRest.insertCell(-1);
+            tdR.innerHTML = '<input type="number" class="input-restante" value="0" readonly>';
         }
 
-        function calculate() {
-            const totalInputs = document.querySelectorAll('.input-total');
-            const restanteInputs = document.querySelectorAll('.input-restante');
-            const storeRows = document.querySelectorAll('#storeRows tr');
-
-            totalInputs.forEach((totalInp, colIndex) => {
-                const totalDaNota = parseFloat(totalInp.value) || 0;
-                let somaLancada = 0;
-
-                storeRows.forEach(row => {
-                    const val = parseFloat(row.cells[colIndex + 1].querySelector('input').value) || 0;
-                    somaLancada += val;
-                });
-
-                const saldoFinal = totalDaNota - somaLancada;
-                const resInput = restanteInputs[colIndex];
-                resInput.value = saldoFinal;
-
-                if (saldoFinal === 0 && totalDaNota > 0) {
-                    resInput.className = 'input-restante zero-stock';
-                } else {
-                    resInput.className = 'input-restante' + (saldoFinal !== 0 ? ' has-stock' : '');
+        function removeLastColumn() {
+            const headerRow = document.getElementById('header-cod');
+            if (headerRow.cells.length > 1) {
+                if (confirm('Remover o último produto e todos os seus valores?')) {
+                    const table = document.getElementById('mainTable');
+                    const allRows = table.querySelectorAll('tr');
+                    allRows.forEach(row => {
+                        if (row.cells.length > 1) row.deleteCell(-1);
+                    });
                 }
-            });
-        }
-
-        function saveData() {
-            const data = [];
-            const cods = document.querySelectorAll('.input-cod');
-            const totals = document.querySelectorAll('.input-total');
-            const storeRows = document.querySelectorAll('#storeRows tr');
-
-            cods.forEach((cod, i) => {
-                const storeVals = [];
-                storeRows.forEach(row => {
-                    storeVals.push(row.cells[i + 1].querySelector('input').value);
-                });
-                data.push({ cod: cod.value, total: totals[i].value, stores: storeVals });
-            });
-            localStorage.setItem('transferData', JSON.stringify(data));
-        }
-
-        function loadData() {
-            const saved = localStorage.getItem('transferData');
-            if (saved) {
-                const data = JSON.parse(saved);
-                data.forEach(item => addColumn(item.cod, item.total, item.stores));
             } else {
-                addColumn(); // Inicia com uma coluna vazia
+                alert('Não há produtos para remover.');
+            }
+        }
+
+        function calculateColumn(colIndex) {
+            const rows = document.getElementById('storeRows').rows;
+            let sum = 0;
+            for (let i = 0; i < rows.length; i++) {
+                sum += parseFloat(rows[i].cells[colIndex].querySelector('input').value) || 0;
+            }
+
+            const totalNota = parseFloat(document.getElementById('footer-total').cells[colIndex].querySelector('input').value) || 0;
+            const restanteInput = document.getElementById('footer-restante').cells[colIndex].querySelector('input');
+            
+            const diff = totalNota - sum;
+            restanteInput.value = diff;
+
+            if (diff === 0 && totalNota > 0) {
+                restanteInput.style.color = "var(--success)";
+                restanteInput.style.borderColor = "var(--success)";
+            } else if (diff < 0) {
+                restanteInput.style.color = "var(--danger)";
+                restanteInput.style.borderColor = "var(--danger)";
+            } else {
+                restanteInput.style.color = "var(--primary)";
+                restanteInput.style.borderColor = "var(--border)";
             }
         }
 
         function clearData() {
-            if (confirm("Tem certeza que deseja apagar todos os lançamentos?")) {
-                localStorage.removeItem('transferData');
+            if (confirm('ATENÇÃO: Isso apagará TODOS os produtos e dados da tela. Deseja continuar?')) {
                 location.reload();
             }
         }
     </script>
 </body>
-
 </html>
