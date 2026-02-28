@@ -14,18 +14,31 @@
             --bg: #f8fafc;
             --border: #e2e8f0;
             --secondary: #64748b;
+            --header-height: 70px;
         }
 
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            max-width: 95vw;
-            overflow-x: auto;
-            min-height: 100vh;
             margin: 0;
             background: var(--bg);
             font-family: 'Segoe UI', system-ui, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header.no-print {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: white;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
         }
 
         .container {
@@ -33,75 +46,62 @@
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            min-width: 400px;
+            margin-top: calc(var(--header-height) + 20px);
+            margin-bottom: 40px;
+            width: fit-content;
+            max-width: 98vw;
         }
 
-        header {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            align-items: center;
-        }
-
-        table {
-            border-collapse: collapse;
-            margin-bottom: 10px;
-        }
-
-        th, td {
-            border: 1px solid var(--border);
-            padding: 6px;
-            text-align: center;
+        table { 
+            border-collapse: collapse; 
+            width: 100%; 
+            table-layout: auto; 
         }
 
         th {
+            position: sticky;
+            top: var(--header-height);
             background: #f1f5f9;
+            z-index: 10;
+            border: 1px solid var(--border);
+            padding: 8px;
             font-size: 11px;
             text-transform: uppercase;
             color: #64748b;
         }
 
+        td { border: 1px solid var(--border); padding: 6px; text-align: center; }
+
+        .row-store-label {
+            position: sticky;
+            left: 0;
+            background: #f8fafc !important;
+            z-index: 5;
+            text-align: right;
+            padding-right: 15px;
+            font-weight: bold;
+            color: #334155;
+            white-space: nowrap;
+            min-width: 110px;
+            border-right: 2px solid var(--border);
+        }
+
+        /* AJUSTE DOS INPUTS PARA SEREM FLUIDOS */
         input {
-            width: 65px;
+            width: 100%; /* Ocupa toda a largura da coluna */
+            box-sizing: border-box; /* Garante que o padding não aumente o tamanho */
             height: 32px;
             border: 1px solid #cbd5e1;
             text-align: center;
             border-radius: 6px;
             font-weight: 600;
+            min-width: 45px; /* Tamanho mínimo para não sumir */
         }
 
-        .input-cod {
-            background: #fffbeb;
-            border-color: #fde68a;
-            color: #92400e;
-            width: 85px;
-        }
+        .input-cod { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+        .input-total { background: #f1f5f9; color: var(--primary); border-style: dashed; }
+        .input-restante { background: #f1f5f9; border: 1px solid var(--border); cursor: not-allowed; }
 
-        .input-total {
-            background: #f1f5f9;
-            color: var(--primary);
-            border-style: dashed;
-        }
-
-        .row-store-label {
-            text-align: right;
-            padding-right: 20px;
-            font-weight: bold;
-            color: #334155;
-            background: #f8fafc;
-            min-width: 120px;
-        }
-
-        .row-total-label { background: #f1f5f9; font-weight: bold; color: var(--primary); }
-        .row-restante-label { background: #f8fafc; font-weight: bold; color: #334155; }
-
-        .input-restante {
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
-            cursor: not-allowed;
-        }
-
-        /* ESTILIZAÇÃO DOS BOTÕES */
         .btn {
             padding: 8px 14px;
             border: none;
@@ -113,58 +113,42 @@
             gap: 6px;
             font-size: 13px;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
         .btn:hover { opacity: 0.85; transform: translateY(-1px); }
-        .btn:active { transform: translateY(0); }
-
         .btn-add { background: var(--primary); color: white; }
         .btn-print { background: var(--secondary); color: white; }
-        
-        .btn-clear-last { 
-            background: var(--warning); 
-            color: white; 
-            margin-left: auto; /* Empurra para a direita */
-        }
-
+        .btn-clear-last { background: var(--warning); color: white; margin-left: auto; }
         .btn-clear { background: var(--danger); color: white; }
 
         @media print {
-            .no-print, .btn, header { display: none !important; }
-            body { background: white; padding: 0; margin: 0; }
-            .container { box-shadow: none; border: none; width: 100%; display: block; }
-            table { zoom: 0.9; width: 100%; }
+            @page { size: landscape; margin: 0.5cm; }
+            header.no-print { display: none !important; }
+            body { background: white; display: block; }
+            .container { margin-top: 0; padding: 0; box-shadow: none; max-width: 100%; }
+            table { width: 100%; zoom: 0.7; }
+            th, .row-store-label { position: static !important; background: white !important; color: black !important; }
+            input { border: 1px solid #000 !important; }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="container">
-        <header class="no-print">
-            <h2 style="margin-right: 15px; font-size: 1.1rem; color: #0f172a;">Separação</h2>
-            
-            <button class="btn btn-add" onclick="addColumn()">
-                <span>➕</span> Novo Produto
-            </button>
-            
-            <button class="btn btn-print" onclick="window.print()">
-                <span>🖨️</span> Imprimir
-            </button>
-            
-            <button class="btn btn-clear-last" onclick="removeLastColumn()">
-                <span>↩️</span> Desfazer Último
-            </button>
-            
-            <button class="btn btn-clear" onclick="clearData()">
-                <span>🗑️</span> Limpar Tudo
-            </button>
-        </header>
+    <header class="no-print">
+        <h2 style="margin: 0 15px 0 0; font-size: 1.1rem; color: #0f172a;">Separação</h2>
+        <button class="btn btn-add" onclick="addColumn(); saveToStorage();"><span>➕</span> Novo Produto</button>
+        <button class="btn btn-print" onclick="window.print()"><span>🖨️</span> Imprimir</button>
+        <button class="btn btn-clear-last" onclick="removeLastColumn()"><span>↩️</span> Desfazer Último</button>
+        <button class="btn btn-clear" onclick="clearData()"><span>🗑️</span> Limpar Tudo</button>
+    </header>
 
+    <div class="container">
         <table id="mainTable">
             <thead>
                 <tr id="header-cod">
-                    <th>LOJAS</th>
+                    <th style="left: 0; z-index: 20;">LOJAS</th>
                 </tr>
             </thead>
             <tbody id="storeRows">
@@ -178,51 +162,42 @@
                 <tr data-store="Aracati"><td class="row-store-label">Aracati</td></tr>
             </tbody>
             <tfoot>
-                <tr id="footer-total"><td class="row-total-label">TOTAL NOTA</td></tr>
-                <tr id="footer-restante"><td class="row-restante-label">RESTANTE</td></tr>
+                <tr id="footer-total"><td class="row-store-label">TOTAL NOTA</td></tr>
+                <tr id="footer-restante"><td class="row-store-label">RESTANTE</td></tr>
             </tfoot>
         </table>
     </div>
 
     <script>
         window.onload = function() {
-            addColumn();
+            loadFromStorage();
         };
 
-        function addColumn() {
+        function addColumn(initialData = null) {
             const header = document.getElementById('header-cod');
             const th = document.createElement('th');
-            th.innerHTML = '<input type="text" class="input-cod" placeholder="CÓD">';
+            const colIndex = header.cells.length;
+            
+            th.innerHTML = `<input type="text" class="input-cod" placeholder="CÓD" oninput="saveToStorage()" value="${initialData?.cod || ''}">`;
             header.appendChild(th);
 
             const rows = document.getElementById('storeRows').rows;
             for (let i = 0; i < rows.length; i++) {
                 const td = rows[i].insertCell(-1);
-                td.innerHTML = '<input type="number" class="qty-input" value="0" oninput="calculateColumn(' + (header.cells.length - 1) + ')">';
+                const val = initialData?.values?.[i] || 0;
+                td.innerHTML = `<input type="number" value="${val}" oninput="calculateColumn(${colIndex}); saveToStorage();">`;
             }
 
             const fTotal = document.getElementById('footer-total');
             const tdT = fTotal.insertCell(-1);
-            tdT.innerHTML = '<input type="number" class="input-total" value="0" oninput="calculateColumn(' + (header.cells.length - 1) + ')">';
+            const totalVal = initialData?.total || 0;
+            tdT.innerHTML = `<input type="number" class="input-total" value="${totalVal}" oninput="calculateColumn(${colIndex}); saveToStorage();">`;
 
             const fRest = document.getElementById('footer-restante');
             const tdR = fRest.insertCell(-1);
-            tdR.innerHTML = '<input type="number" class="input-restante" value="0" readonly>';
-        }
+            tdR.innerHTML = `<input type="number" class="input-restante" value="0" readonly>`;
 
-        function removeLastColumn() {
-            const headerRow = document.getElementById('header-cod');
-            if (headerRow.cells.length > 1) {
-                if (confirm('Remover o último produto e todos os seus valores?')) {
-                    const table = document.getElementById('mainTable');
-                    const allRows = table.querySelectorAll('tr');
-                    allRows.forEach(row => {
-                        if (row.cells.length > 1) row.deleteCell(-1);
-                    });
-                }
-            } else {
-                alert('Não há produtos para remover.');
-            }
+            calculateColumn(colIndex);
         }
 
         function calculateColumn(colIndex) {
@@ -232,26 +207,66 @@
                 sum += parseFloat(rows[i].cells[colIndex].querySelector('input').value) || 0;
             }
 
-            const totalNota = parseFloat(document.getElementById('footer-total').cells[colIndex].querySelector('input').value) || 0;
+            const totalInput = document.getElementById('footer-total').cells[colIndex].querySelector('input');
+            const totalNota = parseFloat(totalInput.value) || 0;
             const restanteInput = document.getElementById('footer-restante').cells[colIndex].querySelector('input');
             
-            const diff = totalNota - sum;
-            restanteInput.value = diff;
+            const result = totalNota - sum;
+            restanteInput.value = result;
 
-            if (diff === 0 && totalNota > 0) {
+            if (result === 0 && totalNota > 0) {
                 restanteInput.style.color = "var(--success)";
-                restanteInput.style.borderColor = "var(--success)";
-            } else if (diff < 0) {
+            } else if (result < 0) {
                 restanteInput.style.color = "var(--danger)";
-                restanteInput.style.borderColor = "var(--danger)";
             } else {
                 restanteInput.style.color = "var(--primary)";
-                restanteInput.style.borderColor = "var(--border)";
+            }
+        }
+
+        function saveToStorage() {
+            const headerCells = document.getElementById('header-cod').cells;
+            const data = [];
+
+            for (let j = 1; j < headerCells.length; j++) {
+                const cod = headerCells[j].querySelector('input').value;
+                const total = document.getElementById('footer-total').cells[j].querySelector('input').value;
+                const values = [];
+                const rows = document.getElementById('storeRows').rows;
+                for (let i = 0; i < rows.length; i++) {
+                    values.push(rows[i].cells[j].querySelector('input').value);
+                }
+                data.push({ cod, total, values });
+            }
+            localStorage.setItem('separacao_dados', JSON.stringify(data));
+        }
+
+        function loadFromStorage() {
+            const saved = localStorage.getItem('separacao_dados');
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.length > 0) {
+                    data.forEach(item => addColumn(item));
+                } else { addColumn(); }
+            } else { addColumn(); }
+        }
+
+        function removeLastColumn() {
+            const headerRow = document.getElementById('header-cod');
+            if (headerRow.cells.length > 1) {
+                if (confirm('Remover o último produto?')) {
+                    const table = document.getElementById('mainTable');
+                    const allRows = table.querySelectorAll('tr');
+                    allRows.forEach(row => {
+                        if (row.cells.length > 1) row.deleteCell(-1);
+                    });
+                    saveToStorage();
+                }
             }
         }
 
         function clearData() {
-            if (confirm('ATENÇÃO: Isso apagará TODOS os produtos e dados da tela. Deseja continuar?')) {
+            if (confirm('Limpar tudo?')) {
+                localStorage.removeItem('separacao_dados');
                 location.reload();
             }
         }
